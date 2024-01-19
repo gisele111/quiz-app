@@ -62,7 +62,7 @@ options: ['Thomas Jefferson', 'John Adams', 'George Washington', 'Abraham Lincol
 correct_answer: 'George Washington'
       }
       ];
-      const getRandomQuestion = (): any => {
+      export const getRandomQuestion = (): any => {
         const randomIndex = Math.floor(Math.random() * questions.length);
         return questions[randomIndex];
       };
