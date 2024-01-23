@@ -42,16 +42,12 @@ export const quizInstructions = async (req: Request, res: Response, next: NextFu
           options: true,
         },
       });
-
-      for (const currentQuestion of questions) {
-        res.write(JSON.stringify({ question: currentQuestion }));
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-      }
+      res.json({ questions });
     } catch (error) {
       console.error('Error starting quiz:', error);
       res.status(500).json({ error: 'Failed to start quiz' });
     } finally {
-      res.end(); 
+  
       await prisma.$disconnect();
     }
   };
@@ -63,7 +59,7 @@ export const submitAnswer = async (req: Request, res: Response, next: NextFuncti
     const user_id = parseInt(req.params.user_id);
     const {user_answer } = req.body;
 
-    if (isNaN(question_id) || isNaN(user_id) || typeof user_answer !== 'string') {
+    if (!question_id || !user_id ) {
       return res.status(400).json({ error: 'Invalid input data' });
     }
 
@@ -73,20 +69,23 @@ export const submitAnswer = async (req: Request, res: Response, next: NextFuncti
       },
       select: {
         correct_answer: true,
+    
       },
     });
     
     if (!questions) {
       return res.status(404).json({ error: 'Question not found' });
-    } else{
+    } 
 
-    const isCorrect = user_answer === questions?.correct_answer;
+    const isCorrect = user_answer === questions.correct_answer;
 
    const submittedAnswer = await prisma.quiz.create({ 
       data: {
         user_id,
         question_id,
         user_answer,
+        score: isCorrect ? 1 : 0,
+       
       },
     });
 
@@ -109,10 +108,37 @@ export const submitAnswer = async (req: Request, res: Response, next: NextFuncti
       res.status(200).json({ message: 'Answer submitted successfully', submittedAnswer });
     } else {
       res.status(404).json({ error: 'User not found' });
-    }}
+    }
   } catch (error) {
     console.error('Error submitting answer:', error);
     res.status(500).json({ error: 'Failed to submit answer' });
+  } finally {
+    await prisma.$disconnect();
+  }
+};
+
+export const resetProgress = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const user_id = parseInt(req.params.user_id);
+
+    if (!user_id) {
+      return res.status(400).json({ error: 'Invalid user ID' });
+    }
+
+    
+    await prisma.quiz.deleteMany({
+      where: { user_id },
+    });
+
+    await prisma.user.update({
+      where: { user_id },
+      data: { current_score: 0 },
+    });
+
+    res.status(200).json({ message: 'Progress reset successfully' });
+  } catch (error) {
+    console.error('Error resetting progress:', error);
+    res.status(500).json({ error: 'Failed to reset progress' });
   } finally {
     await prisma.$disconnect();
   }

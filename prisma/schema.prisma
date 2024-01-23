@@ -9,6 +9,8 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+
 model User {
 user_id Int @id @default(autoincrement())
 user_name String
@@ -24,42 +26,27 @@ current_score Int?
 
 
 model Question {
-  question_id    Int      @id @default(autoincrement())    
-  question_text  String
-  options        String[]
-  correct_answer String    
- answers      Quiz[]
+question_id    Int      @id @default(autoincrement())    
+question_text  String
+options        String[]
+correct_answer String    
+answers      Quiz[]
 
- @@map("Question")
+@@map("Question")
 }
 
 model Quiz {
- quiz_id     Int      @id @default(autoincrement()) 
-  question_id   Int     
-  user_id       Int   
-  user_answer   String   
-  question      Question @relation(fields: [question_id], references: [question_id])
- user      User @relation(fields: [user_id], references: [user_id])
-  start_time   DateTime @default(now())
-   end_time     DateTime  @default(now())
-  score        Int?
-    @@unique([question_id, user_id]) 
+quiz_id     Int      @id @default(autoincrement()) 
+question_id   Int     
+user_id       Int   
+user_answer   String   
+question      Question @relation(fields: [question_id], references: [question_id])
+user      User @relation(fields: [user_id], references: [user_id])
+start_time   DateTime @default(now())
+end_time     DateTime  @default(now())
+score        Int?
+@@unique([question_id, user_id]) 
 
-    @@map("Quiz")
+@@map("Quiz")
 } 
-
-
-model QuizInstructions {
-  id          Int       @id @default(autoincrement())
-  title       String   
-  createdAt   DateTime  @default(now()) 
-  updatedAt   DateTime  @updatedAt 
-  @@map("QuizInstructions")
-}
-
-
-
-
-
-
 
