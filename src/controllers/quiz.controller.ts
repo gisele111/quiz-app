@@ -144,3 +144,21 @@ export const resetProgress = async (req: Request, res: Response, next: NextFunct
   }
 };
 
+export const completeQuiz = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const user_id = parseInt(req.params.user_id);
+
+    const userQuizzes = await prisma.quiz.findMany({
+      where: {
+        user_id
+      },
+    });
+
+    const totalScore = userQuizzes.reduce((acc, quiz) => acc + (quiz.score || 0), 0);
+
+    res.status(200).json({ message: 'Quiz completed successfully', totalScore });
+  } catch (error) {
+    console.error('Error completing quiz:', error);
+    res.status(500).json({ error: 'Failed to complete quiz' });
+  }
+};
