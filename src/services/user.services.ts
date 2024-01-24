@@ -1,7 +1,8 @@
 import { PrismaClient } from "@prisma/client";
-import  {hashSync, compareSync} from 'bcrypt';
-import * as jwt from 'jsonwebtoken';
 export const prisma = new PrismaClient()
+import  {hashSync, compareSync} from 'bcrypt';
+
+
 
 interface typeBody {
 user_name: string,

@@ -4,7 +4,7 @@ import { prisma } from '../services/user.services';
 import * as jwt from 'jsonwebtoken';
 import { JWT_SECRET } from '../secrets';
 import  {hashSync, compareSync} from 'bcrypt';
-import { userInfo } from 'os';
+
 
 const createUserController = async (req: Request, res: Response) => {
 const { user_name, password, email } = req.body;
@@ -48,7 +48,7 @@ const updateData = async(req:Request,res:Response)=>{
 const {id} = req.params;
 const intId = parseInt(id);
 const updated= await updateSingleUser(intId,req.body);
-res.status(200).json({status:'sucess',updated})
+res.status(200).json({status:'updated successfully',updated})
 }
 
 const deleteData = async(req:Request,res:Response)=>{
@@ -81,9 +81,23 @@ res.json({ user: { userId: user.user_id, email: user.email }, token, refreshToke
 }
 
 const logout = async (req: Request, res: Response) => {
-res.clearCookie('jwtToken'); 
-res.status(200).json({ message: 'Logged out successfully' });
+
+  const token = req.headers['authorization']?.split(' ')[1];
+
+  if (!token) {
+    return res.status(401).json({ error: 'Unauthorized - Access token not provided' });
+  }
+
+  try {
+    const decoded: any = jwt.verify(token, JWT_SECRET);
+    res.clearCookie('jwtToken');
+    res.status(200).json({ message: 'Logged out successfully' });
+  } catch (error) {
+    console.error('Error verifying access token:', error);
+    res.status(401).json({ error: 'Unauthorized - Invalid access token' });
+  }
 };
+
 
 
   export 

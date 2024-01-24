@@ -76,6 +76,12 @@ correct_answer: 'George Washington'
         question_text: 'What is the chemical symbol for gold?',
         options: ['Au', 'Ag', 'Fe', 'Cu'],
         correct_answer: 'Au'
+      },
+      
+      {
+        question_text: 'What is the capital city of Rwanda?',
+        options: ['kigali', 'Muhanga', 'Ruhango', 'Huye'],
+        correct_answer: 'Au'
       }
       ];
      

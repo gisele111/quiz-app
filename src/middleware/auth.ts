@@ -35,6 +35,7 @@ if (!user) {
 return res.status(403).json({ error: 'Forbidden - User not found' });
 }
 req.user = user;
+
 next();
 } catch (error: any) {
 console.error('Error verifying token:', error);
