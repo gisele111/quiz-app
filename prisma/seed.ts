@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { prisma } from '../src/services/user.services';
-    export const seedQuestions = async (req: Request, res: Response) => {
+
+export const seedQuestions = async (req: Request, res: Response) => {
 try {
       const questions = [
    
@@ -62,8 +63,8 @@ try {
         },
       {
         question_text: 'Who was the first president of the United States?',
-options: ['Thomas Jefferson', 'John Adams', 'George Washington', 'Abraham Lincoln'],
-correct_answer: 'George Washington'
+        options: ['Thomas Jefferson', 'John Adams', 'George Washington', 'Abraham Lincoln'],
+        correct_answer: 'George Washington'
       },
 
       {

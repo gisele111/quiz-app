@@ -6,7 +6,7 @@ const getQuizInstructions = async () => {
         
         Instructions:
         1. Read each question carefully before answering.
-        2. You will have a limited time to complete the quiz.
+        2. You will have one hour to complete the quiz.
         3. Choose the correct answer for each question.
         4. Submit your answers before the time runs out.
   

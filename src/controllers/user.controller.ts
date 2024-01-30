@@ -55,7 +55,7 @@ const deleteData = async(req:Request,res:Response)=>{
     const {id} = req.params;
     const intId = parseInt(id);
   const deleted= await deleteUser(intId);
-  res.status(200).json({status:'success',deleted})
+  res.status(200).json({status:'successful deleted',deleted})
 }
 
 const login = async (req: Request, res: Response) => {
@@ -68,17 +68,16 @@ const login = async (req: Request, res: Response) => {
   if (!compareSync(password, user.password)) {
       throw Error('incorrect password')
   }
-const token = jwt.sign({ userId: user.user_id,userName:user.user_name }, JWT_SECRET,{ expiresIn: '1d'}); 
-res.status(200).json({ token });
+  const token = jwt.sign({ userId: user.user_id, userName: user.user_name }, JWT_SECRET, { expiresIn: '1h' });
+  const refreshToken = jwt.sign({ userId: user.user_id }, JWT_SECRET, { expiresIn: '1d' });
 
-const refreshToken = jwt.sign({ userId: user.user_id },JWT_SECRET, {expiresIn: '1d' });
-res.json({ user: { userId: user.user_id, email: user.email }, token, refreshToken });
-
+ 
+  res.status(200).json({ user: { userId: user.user_id, email: user.email }, token, refreshToken });
 } catch (error) {
   console.error('Error during login:', error);
   res.status(500).json({ message: 'Internal server error' });
 }
-}
+};
 
 const logout = async (req: Request, res: Response) => {
 
@@ -91,6 +90,8 @@ const logout = async (req: Request, res: Response) => {
   try {
     const decoded: any = jwt.verify(token, JWT_SECRET);
     res.clearCookie('jwtToken');
+    console.log('User logged out successfully');
+
     res.status(200).json({ message: 'Logged out successfully' });
   } catch (error) {
     console.error('Error verifying access token:', error);
