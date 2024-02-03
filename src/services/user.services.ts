@@ -20,9 +20,8 @@ const signup = async (user_name: string, password: string, email: string ) => {
     })
     return createdUser
     }
-   
-    
-const getAllUsers = async()=>{
+
+const getAllUsers = async()=> {
     const allData = await prisma.user.findMany();
     return allData;
 }
