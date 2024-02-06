@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { startQuiz, getQuizInstructions, submitAnswer, resetProgress, completequiz } from '../services/quiz.services';
+import authenticateBearerToken from '../middleware/auth';
 
 export const quizInstructions = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -10,13 +11,14 @@ export const quizInstructions = async (req: Request, res: Response, next: NextFu
   }
 };
 
+
 export const TostartQuiz = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const user_id = parseInt(req.params.user_id);
-    const result = await startQuiz(user_id);
+  
+    const result = await startQuiz( );
     res.json(result);
   } catch (error) {
-    console.error('Error starting quiz:', error);
+
     res.status(500).json({ error: 'Failed to start quiz' });
   }
 };

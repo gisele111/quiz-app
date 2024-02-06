@@ -23,7 +23,7 @@ const getQuizInstructions = async () => {
   }
 };
 
-const startQuiz = async (user_id: number) => {
+const startQuiz = async ( ) => {
   try {
     const questions = await prisma.question.findMany({
       select: {
@@ -130,8 +130,9 @@ const completequiz = async (user_id: number) => {
     });
 
     const totalScore = userQuizzes.reduce((acc, quiz) => acc + (quiz.score || 0), 0);
+    const totalQuestions = userQuizzes.length;
 
-    return { message: 'Quiz completed successfully', totalScore };
+    return { message: `Quiz completed successfully. Your total score is ${totalScore}/${totalQuestions}.`, totalScore };
   } catch (error) {
     throw new Error('Failed to complete quiz');
   }

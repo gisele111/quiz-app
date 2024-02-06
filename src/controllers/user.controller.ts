@@ -26,7 +26,7 @@ return res.status(400).json({ message: 'User with this email already exists' });
   
 const newUser = await signup( user_name, password, email );
 
-const token = jwt.sign({ userId: newUser.user_id, userName: newUser.user_name }, JWT_SECRET, { expiresIn: '1h' });
+const token = jwt.sign({ userId: newUser.user_id, userName: newUser.user_name }, JWT_SECRET, { expiresIn: '1d' });
 
 res.status(201).json({
   message: 'User created successfully',
@@ -75,10 +75,7 @@ const login = async (req: Request, res: Response) => {
       throw Error('incorrect password')
   }
   const token = jwt.sign({ userId: user.user_id, userName: user.user_name }, JWT_SECRET, { expiresIn: '1h' });
-  const refreshToken = jwt.sign({ userId: user.user_id }, JWT_SECRET, { expiresIn: '1d' });
 
- 
-  res.status(200).json({ user: { userId: user.user_id, email: user.email }, token, refreshToken });
 } catch (error) {
   console.error('Error during login:', error);
   res.status(500).json({ message: 'Internal server error' });
