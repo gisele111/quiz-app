@@ -1,5 +1,5 @@
 import { Request,Response } from 'express';
-import { signup, getAllUsers, getSingleUser, updateSingleUser, deleteUser } from '../services/user.services';
+import { signup,  getAllUsers, getSingleUser, updateSingleUser, deleteUser } from '../services/user.services';
 import { prisma } from '../services/user.services';
 import * as jwt from 'jsonwebtoken';
 import { JWT_SECRET } from '../secrets';
@@ -74,8 +74,8 @@ const login = async (req: Request, res: Response) => {
   if (!compareSync(password, user.password)) {
       throw Error('incorrect password')
   }
-  const token = jwt.sign({ userId: user.user_id, userName: user.user_name }, JWT_SECRET, { expiresIn: '1h' });
-
+  const token = jwt.sign({ userId: user.user_id, userName: user.user_name }, JWT_SECRET, { expiresIn: '1d' });
+  res.status(200).json({ message: 'Login successful', token });
 } catch (error) {
   console.error('Error during login:', error);
   res.status(500).json({ message: 'Internal server error' });
@@ -93,7 +93,7 @@ const logout = async (req: Request, res: Response) => {
   try {
     const decoded: any = jwt.verify(token, JWT_SECRET);
     res.clearCookie('jwtToken');
-    console.log('User logged out successfully');
+ 
 
     res.status(200).json({ message: 'Logged out successfully' });
   } catch (error) {

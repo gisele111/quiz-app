@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { startQuiz, getQuizInstructions, submitAnswer, resetProgress, completequiz } from '../services/quiz.services';
-import authenticateBearerToken from '../middleware/auth';
+import { prisma } from '../services/user.services';
 
 export const quizInstructions = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -28,6 +28,19 @@ export const TosubmitAnswer = async (req: Request, res: Response, next: NextFunc
     const question_id = parseInt(req.params.question_id);
     const user_id = parseInt(req.params.user_id);
     const { user_answer } = req.body;
+
+    // Check if the user has already answered this question
+    const previousAnswer = await prisma.quiz.findFirst({
+      where: {
+        question_id: question_id,
+        user_id: user_id,
+      },
+    });
+
+    if (previousAnswer) {
+      return res.status(400).json({ error: 'You are not allowed to answer the same question more than once' });
+    }
+
     const result = await submitAnswer(question_id, user_id, user_answer);
     res.status(200).json(result);
   } catch (error) {

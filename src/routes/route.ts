@@ -11,7 +11,7 @@ router.get('/getSingleUser/:id', authenticateBearerToken, single);
 router.patch('/updateUser/:id', updateData);  
 router.delete('/deleteUser/:id', deleteData);  
 router.post('/login', login);
-router.get('/logout', authenticateBearerToken, logout);
+router.post('/logout', authenticateBearerToken, logout);
 router.get('/authenticateBearerToken', authenticateBearerToken);
 router.get('/startquiz/:user_id', authenticateBearerToken, TostartQuiz);
 router.get('/quizInstructions', authenticateBearerToken, quizInstructions);
