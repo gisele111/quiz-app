@@ -17,7 +17,7 @@ const swagger = {
 
 
         
-        "/createUser": {
+        "/api/createUser": {
             "post": {
                 "tags": ["Users"],
                 "summary": "Create a new user",
@@ -81,7 +81,7 @@ const swagger = {
                 }] 
             }
         },
-        "/getAllUsers": {
+        "/api/getAllUsers": {
             "get": {
                 "tags": ["Users"],
                 "summary": "Get all user data",
@@ -110,7 +110,7 @@ const swagger = {
                 "x-controller": "getData"
             }
         },
-        "/getSingleUser/{id}": {
+        "/api/getSingleUser/{id}": {
             "get": {
                 "tags": ["Users"],
                 "summary": "Get single user data",
@@ -139,7 +139,7 @@ const swagger = {
                 "x-controller": "single"
             }
         },
-        "/updateUser/{id}": {
+        "/api/updateUser/{id}": {
             "put": {
                 "tags": ["Users"],
                 "summary": "Update user data",
@@ -187,7 +187,7 @@ const swagger = {
                 "x-controller": "updateData"
             }
         },
-        "/deleteUser/{id}": {
+        "/api/deleteUser/{id}": {
             "delete": {
                 "tags": ["Users"],
                 "summary": "Delete user data",
@@ -225,7 +225,7 @@ const swagger = {
                 "x-controller": "deleteData"
             }
         },
-        "/login": {
+        "/api/login": {
             "post": {
                 "tags": ["Auth"],
                 "summary": "User login",
@@ -279,7 +279,7 @@ const swagger = {
             }
         },
 
-        "/logout": {
+        "/api/logout": {
             "post": {
                 "tags": ["Auth"],
                 "summary": "User logout",
@@ -296,7 +296,7 @@ const swagger = {
                 "x-controller": "logout"
             }
         },
-        "/quizInstructions": {
+        "/api/quizInstructions": {
             "get": {
                 "tags": ["Quiz"],
                 "summary": "Get quiz instructions",
@@ -325,7 +325,7 @@ const swagger = {
                 }
             }
         },
-        "/startQuiz/{user_id}": {
+        "/api/startQuiz/{user_id}": {
             "get": {
                 "tags": ["Quiz"],
                 "summary": "Start quiz",
@@ -357,7 +357,7 @@ const swagger = {
                 }
             }
         },
-        "/submitAnswer/{user_id}/{question_id}": {
+        "/api/submitAnswer/{user_id}/{question_id}": {
             "post": {
                 "tags": ["Quiz"],
                 "summary": "Submit answer",
@@ -385,8 +385,8 @@ const swagger = {
                         "schema": {
                             "type": "object",
                             "properties": {
-                                "is_correct": {
-                                    "type": "boolean",
+                                "user_answer": {
+                                    "type": "string",
                                     "example": true
                                 }
                             }
@@ -415,7 +415,7 @@ const swagger = {
                 }
             }
         },
-        "/resetProgress/{user_id}": {
+        "/api/resetProgress/{user_id}": {
             "post": {
                 "tags": ["Quiz"],
                 "summary": "Reset quiz progress",
@@ -447,7 +447,7 @@ const swagger = {
                 }
             }
         },
-        "/completeQuiz/{user_id}": {
+        "/api/completeQuiz/{user_id}": {
             "post": {
                 "tags": ["Quiz"],
                 "summary": "Complete quiz",
