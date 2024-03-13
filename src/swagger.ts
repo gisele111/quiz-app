@@ -9,14 +9,11 @@ const swagger = {
     "securityDefinitions": {
         "JWT": {
             "type": "apiKey",
-            "name": "Authorization",
+            "name": "authorization",
             "in": "header"
         }
     },
-    "paths": {
-
-
-        
+    "paths": {  
         "/api/createUser": {
             "post": {
                 "tags": ["Users"],
@@ -76,40 +73,42 @@ const swagger = {
                     }
                 },
                 "x-controller": "signup",
-                "security": [{
-                    "JWT": []
-                }] 
             }
         },
         "/api/getAllUsers": {
             "get": {
-                "tags": ["Users"],
-                "summary": "Get all user data",
-                "description": "This endpoint retrieves all user data.",
-                "produces": ["application/json"],
-                "responses": {
-                    "200": {
-                        "description": "Successful operation",
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "data": {
-                                    "type": "array",
-                                    "items": {
-                                        "type": "object"
-
-                                    }
-                                }
-                            }
+              "tags": ["Users"],
+              "summary": "Get all user data",
+              "description": "This endpoint retrieves all user data.",
+              "produces": ["application/json"],
+              "responses": {
+                "200": {
+                  "description": "Successful operation",
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "data": {
+                        "type": "array",
+                        "items": {
+                          "type": "object"
                         }
-                    },
-                    "500": {
-                        "description": "Internal server error"
+                      }
                     }
+                  }
                 },
-                "x-controller": "getData"
+                "500": {
+                  "description": "Internal server error"
+                }
+              },
+              "x-controller": "getData",
+              "security": [
+                {
+                  "JWT": []
+                }
+              ]
             }
-        },
+          },
+          
         "/api/getSingleUser/{id}": {
             "get": {
                 "tags": ["Users"],
@@ -136,57 +135,90 @@ const swagger = {
                         "description": "Internal server error"
                     }
                 },
-                "x-controller": "single"
-            }
-        },
-        "/api/updateUser/{id}": {
-            "put": {
-                "tags": ["Users"],
-                "summary": "Update user data",
-                "description": "This endpoint updates data of a single user by their ID.",
-                "produces": ["application/json"],
-                "parameters": [{
-                        "name": "id",
-                        "in": "path",
-                        "description": "ID of the user to update",
-                        "required": true,
-                        "type": "integer",
-                        "format": "int64"
-                    },
+                "x-controller": "single",
+                "security": [
                     {
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "object"
-
-                        }
+                      "JWT": []
                     }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Successful operation",
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "status": {
-                                    "type": "string",
-                                    "example": "updated successfully"
-                                },
-                                "updated": {
-                                    "type": "object"
-
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error"
-                    }
-                },
-                "x-controller": "updateData"
+                  ]
+                  
             }
         },
+       "/api/updateUser/{id}": {
+  "put": {
+    "tags": ["Users"],
+    "summary": "Update user data",
+    "description": "This endpoint updates data of a single user by their ID.",
+    "produces": ["application/json"],
+    "parameters": [{
+      "name": "id",
+      "in": "path",
+      "description": "ID of the user to update",
+      "required": true,
+      "type": "integer",
+      "format": "int64"
+    }, {
+      "name": "body",
+      "in": "body",
+      "required": true,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "user_name": {
+            "type": "string",
+            "description": "New user name"
+          },
+          "email": {
+            "type": "string",
+            "description": "New email address"
+          },
+          "password": {
+            "type": "string",
+            "description": "New password"
+          }
+        }
+      }
+    }],
+    "responses": {
+      "200": {
+        "description": "Successful operation",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "string",
+              "example": "updated successfully"
+            },
+            "updated": {
+              "type": "object",
+              "properties": {
+                "user_id": {
+                  "type": "integer"
+                },
+                "user_name": {
+                  "type": "string"
+                },
+                "email": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "404": {
+        "description": "User not found"
+      },
+      "500": {
+        "description": "Internal server error"
+      }
+    },
+    "x-controller": "updateData",
+    "security": [{
+      "JWT": []
+    }]
+  }
+},
         "/api/deleteUser/{id}": {
             "delete": {
                 "tags": ["Users"],
@@ -293,7 +325,12 @@ const swagger = {
                         "description": "Unauthorized - Access token not provided or invalid"
                     }
                 },
-                "x-controller": "logout"
+                "x-controller": "logout",
+                "security": [
+                  {
+                    "JWT": []
+                  }
+                ]
             }
         },
         "/api/quizInstructions": {
@@ -304,7 +341,7 @@ const swagger = {
                 "produces": ["application/json"],
                 "responses": {
                     "200": {
-                       // "description": "Successful operation",
+                    
                         "schema": {
                             "type": "object",
                             "properties": {
@@ -322,7 +359,13 @@ const swagger = {
                     "500": {
                         "description": "Internal server error"
                     }
-                }
+                },
+                "x-controller": "quizInstructions",
+                "security": [
+                    {
+                      "JWT": []
+                    }
+                  ]
             }
         },
         "/api/startQuiz/{user_id}": {
@@ -351,10 +394,20 @@ const swagger = {
                             }
                         }
                     },
+                      "400": {
+                        "description": "Bad request - Invalid user ID"
+                    },
+
                     "500": {
                         "description": "Internal server error"
                     }
-                }
+                },
+                "x-controller": "TostartQuiz",
+                "security": [
+                    {
+                      "JWT": []
+                    }
+                  ]
             }
         },
         "/api/submitAnswer/{user_id}/{question_id}": {
@@ -412,7 +465,13 @@ const swagger = {
                     "500": {
                         "description": "Internal server error"
                     }
-                }
+                },
+                "x-controller": "TosubmitAnswer",
+                "security": [
+                    {
+                      "JWT": []
+                    }
+                  ]
             }
         },
         "/api/resetProgress/{user_id}": {
@@ -444,7 +503,13 @@ const swagger = {
                     "500": {
                         "description": "Internal server error"
                     }
-                }
+                },
+                "x-controller": "ToresetProgress",
+                "security": [
+                    {
+                      "JWT": []
+                    }
+                  ]
             }
         },
         "/api/completeQuiz/{user_id}": {
@@ -458,17 +523,27 @@ const swagger = {
                     "in": "path",
                     "description": "ID of the user",
                     "required": true,
-                    "type": "integer"
+                    "schema": {
+                        "type": "integer"
+                    }
                 }],
                 "responses": {
                     "200": {
                         "description": "Quiz completed successfully",
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "message": {
-                                    "type": "string",
-                                    "example": "Quiz completed successfully"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Quiz completed successfully. Your total score is 8/10."
+                                        },
+                                        "totalScore": {
+                                            "type": "integer",
+                                            "example": 8
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -476,10 +551,15 @@ const swagger = {
                     "500": {
                         "description": "Internal server error"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "JWT": []
+                    }
+                ]
             }
         }
-    }
-};
+        
+    }}
 
 export default swagger;

@@ -38,7 +38,7 @@ return singleUser;
 const updateSingleUser = async(singleId:number,body:typeBody)=>{
  const updatedData = await prisma.user.update({
     where:{user_id:singleId},
-    data:body
+    data:body,
  });
  return updatedData;
 }

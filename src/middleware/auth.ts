@@ -23,12 +23,15 @@ user_id: decoded.userId,
 
 
 const authenticateBearerToken = async (req: Request, res: Response, next: NextFunction) => {
-const token = req.headers['authorization']?.split(' ')[1];
 
-if (!token) {
-return res.status(401).json({ error: 'Unauthorized - Bearer token not provided' });
-}
+    const authHeader = req.headers.authorization;
 
+    if (!authHeader) {
+      return res.status(401).json({ error: 'Unauthorized - Bearer token not provided' });
+    }
+  
+    const token = authHeader.split(' ')[1];
+  
 try {
 const user = await getUserByToken(token);
 if (!user) {

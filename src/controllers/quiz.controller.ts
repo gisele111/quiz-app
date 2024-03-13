@@ -7,6 +7,7 @@ export const quizInstructions = async (req: Request, res: Response, next: NextFu
     const instructionsAndRules = await getQuizInstructions();
     res.status(200).send(instructionsAndRules);
   } catch (error) {
+    console.error('Error retrieving quiz instructions:', error);
     res.status(500).send('Failed to retrieve quiz instructions and rules.');
   }
 };
@@ -18,7 +19,7 @@ export const TostartQuiz = async (req: Request, res: Response, next: NextFunctio
     const result = await startQuiz( );
     res.json(result);
   } catch (error) {
-
+    console.error('Error starting quiz:', error);
     res.status(500).json({ error: 'Failed to start quiz' });
   }
 };
@@ -29,7 +30,7 @@ export const TosubmitAnswer = async (req: Request, res: Response, next: NextFunc
     const user_id = parseInt(req.params.user_id);
     const { user_answer } = req.body;
 
-    // Check if the user has already answered this question
+
     const previousAnswer = await prisma.quiz.findFirst({
       where: {
         question_id: question_id,
@@ -41,11 +42,16 @@ export const TosubmitAnswer = async (req: Request, res: Response, next: NextFunc
       return res.status(400).json({ error: 'You are not allowed to answer the same question more than once' });
     }
 
+  
     const result = await submitAnswer(question_id, user_id, user_answer);
     res.status(200).json(result);
   } catch (error) {
     console.error('Error submitting answer:', error);
-    res.status(500).json({ error: 'Failed to submit answer' });
+    if (error.message === 'UserId not found' || error.message === 'QuestionId not found') {
+      res.status(400).json({ error: error.message });
+    } else {
+      res.status(500).json({ error: 'Failed to submit answer userId or questionId not found' });
+    }
   }
 };
 
@@ -56,7 +62,7 @@ export const ToresetProgress = async (req: Request, res: Response, next: NextFun
     res.status(200).json(result);
   } catch (error) {
     console.error('Error resetting progress:', error);
-    res.status(500).json({ error: 'Failed to reset progress' });
+    res.status(500).json({ error: 'Failed to reset progress invalid userId' });
   }
 };
 

@@ -6,7 +6,7 @@ const getQuizInstructions = async () => {
         
         Instructions:
         1. Read each question carefully before answering.
-        2. You will have one hour to complete the quiz.
+        2. You will have two hour to complete the quiz.
         3. Choose the correct answer for each question.
         4. Submit your answers before the time runs out.
   
@@ -92,7 +92,7 @@ const submitAnswer = async (question_id: number, user_id: number, user_answer: s
       throw new Error('User not found');
     }
   } catch (error) {
-    throw new Error('Failed to submit answer');
+    throw error;
   } finally {
     await prisma.$disconnect();
   }
@@ -102,6 +102,7 @@ const resetProgress = async (user_id: number) => {
   try {
     if (!user_id) {
       throw new Error('Invalid user ID');
+  
     }
 
     await prisma.quiz.deleteMany({
@@ -115,7 +116,8 @@ const resetProgress = async (user_id: number) => {
 
     return { message: 'Progress reset successfully' };
   } catch (error) {
-    throw new Error('Failed to reset progress');
+    console.log("Invalid user ID");
+    throw new Error('Invalid user ID');
   } finally {
     await prisma.$disconnect();
   }

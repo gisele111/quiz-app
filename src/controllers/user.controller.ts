@@ -4,6 +4,7 @@ import { prisma } from '../services/user.services';
 import * as jwt from 'jsonwebtoken';
 import { JWT_SECRET } from '../secrets';
 import  {hashSync, compareSync} from 'bcrypt';
+import { log } from 'console';
 
 
 const createUserController = async (req: Request, res: Response) => {
@@ -26,7 +27,7 @@ return res.status(400).json({ message: 'User with this email already exists' });
   
 const newUser = await signup( user_name, password, email );
 
-const token = jwt.sign({ userId: newUser.user_id, userName: newUser.user_name }, JWT_SECRET, { expiresIn: '1d' });
+const token = jwt.sign({ userId: newUser.user_id, userName: newUser.user_name }, JWT_SECRET, { expiresIn: '2h' });
 
 res.status(201).json({
   message: 'User created successfully',
@@ -65,22 +66,25 @@ const deleteData = async(req:Request,res:Response)=>{
 }
 
 const login = async (req: Request, res: Response) => {
-  const {email, password} = req.body;
+  const { email, password } = req.body;
   try {
-  let user = await prisma.user.findFirst({where: {email}})
-  if (!user) {
-      throw Error('user does not exists')
+    let user = await prisma.user.findFirst({ where: { email } });
+    if (!user) {
+      res.status(404).json({ message: 'User not found' });
+      return;
+    }
+    if (!compareSync(password, user.password)) {
+      res.status(401).json({ message: 'Incorrect password' });
+      return;
+    }
+    const token = jwt.sign({ userId: user.user_id, userName: user.user_name }, JWT_SECRET, { expiresIn: '2h' });
+    res.status(200).json({ message: 'Login successful', token });
+  } catch (error) {
+    console.error('Error during login:', error);
+    res.status(500).json({ message: 'Error during login' });
   }
-  if (!compareSync(password, user.password)) {
-      throw Error('incorrect password')
-  }
-  const token = jwt.sign({ userId: user.user_id, userName: user.user_name }, JWT_SECRET, { expiresIn: '1d' });
-  res.status(200).json({ message: 'Login successful', token });
-} catch (error) {
-  console.error('Error during login:', error);
-  res.status(500).json({ message: 'Internal server error' });
-}
 };
+
 
 const logout = async (req: Request, res: Response) => {
 
